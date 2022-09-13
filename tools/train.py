@@ -133,7 +133,7 @@ def main():
     wandb.init(project="resherch", sync_tensorboard=True)
     wandb.config.update(args)
 
-    wandb.watch(model, log="parameters", log_freq=100)
+    # wandb.watch(model, log="parameters", log_freq=100)
 
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
