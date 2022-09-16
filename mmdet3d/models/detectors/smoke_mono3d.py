@@ -10,12 +10,15 @@ class SMOKEMono3D(SingleStageMono3DDetector):
 
     """
 
-    def __init__(self,
-                 backbone,
-                 neck,
-                 bbox_head,
-                 train_cfg=None,
-                 test_cfg=None,
-                 pretrained=None):
-        super(SMOKEMono3D, self).__init__(backbone, neck, bbox_head, train_cfg,
-                                          test_cfg, pretrained)
+    def __init__(
+        self,
+        backbone,
+        neck,
+        bbox_head,
+        train_cfg=None,
+        test_cfg=None,
+        pretrained=None,
+    ):
+        super(SMOKEMono3D, self).__init__(
+            backbone, neck, bbox_head, train_cfg, test_cfg, pretrained
+        )

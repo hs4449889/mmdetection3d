@@ -21,14 +21,16 @@ class SingleStage3DDetector(Base3DDetector):
             Defaults to None.
     """
 
-    def __init__(self,
-                 backbone,
-                 neck=None,
-                 bbox_head=None,
-                 train_cfg=None,
-                 test_cfg=None,
-                 init_cfg=None,
-                 pretrained=None):
+    def __init__(
+        self,
+        backbone,
+        neck=None,
+        bbox_head=None,
+        train_cfg=None,
+        test_cfg=None,
+        init_cfg=None,
+        pretrained=None,
+    ):
         super(SingleStage3DDetector, self).__init__(init_cfg)
         self.backbone = build_backbone(backbone)
         if neck is not None:

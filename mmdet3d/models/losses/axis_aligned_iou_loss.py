@@ -22,7 +22,8 @@ def axis_aligned_iou_loss(pred, target):
         torch.Tensor: IoU loss between predictions and targets.
     """
     axis_aligned_iou = AxisAlignedBboxOverlaps3D()(
-        pred, target, is_aligned=True)
+        pred, target, is_aligned=True
+    )
     iou_loss = 1 - axis_aligned_iou
     return iou_loss
 
@@ -37,19 +38,21 @@ class AxisAlignedIoULoss(nn.Module):
         loss_weight (float, optional): Weight of loss. Defaults to 1.0.
     """
 
-    def __init__(self, reduction='mean', loss_weight=1.0):
+    def __init__(self, reduction="mean", loss_weight=1.0):
         super(AxisAlignedIoULoss, self).__init__()
-        assert reduction in ['none', 'sum', 'mean']
+        assert reduction in ["none", "sum", "mean"]
         self.reduction = reduction
         self.loss_weight = loss_weight
 
-    def forward(self,
-                pred,
-                target,
-                weight=None,
-                avg_factor=None,
-                reduction_override=None,
-                **kwargs):
+    def forward(
+        self,
+        pred,
+        target,
+        weight=None,
+        avg_factor=None,
+        reduction_override=None,
+        **kwargs,
+    ):
         """Forward function of loss calculation.
 
         Args:
@@ -68,15 +71,23 @@ class AxisAlignedIoULoss(nn.Module):
         Returns:
             torch.Tensor: IoU loss between predictions and targets.
         """
-        assert reduction_override in (None, 'none', 'mean', 'sum')
+        assert reduction_override in (None, "none", "mean", "sum")
         reduction = (
-            reduction_override if reduction_override else self.reduction)
-        if (weight is not None) and (not torch.any(weight > 0)) and (
-                reduction != 'none'):
+            reduction_override if reduction_override else self.reduction
+        )
+        if (
+            (weight is not None)
+            and (not torch.any(weight > 0))
+            and (reduction != "none")
+        ):
             return (pred * weight).sum()
-        return axis_aligned_iou_loss(
-            pred,
-            target,
-            weight=weight,
-            avg_factor=avg_factor,
-            reduction=reduction) * self.loss_weight
+        return (
+            axis_aligned_iou_loss(
+                pred,
+                target,
+                weight=weight,
+                avg_factor=avg_factor,
+                reduction=reduction,
+            )
+            * self.loss_weight
+        )

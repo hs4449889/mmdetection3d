@@ -4,10 +4,15 @@ import numpy as np
 import pytest
 import torch
 
-from mmdet3d.core import (Box3DMode, CameraInstance3DBoxes,
-                          DepthInstance3DBoxes, LiDARInstance3DBoxes)
+from mmdet3d.core import (
+    Box3DMode,
+    CameraInstance3DBoxes,
+    DepthInstance3DBoxes,
+    LiDARInstance3DBoxes,
+)
 from mmdet3d.core.bbox import Coord3DMode
 from mmdet3d.core.points import DepthPoints, LiDARPoints
+
 # yapf: disable
 from mmdet3d.datasets import (AffineResize, BackgroundPointsFilter,
                               GlobalAlignment, GlobalRotScaleTrans,
