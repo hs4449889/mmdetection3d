@@ -20,9 +20,24 @@ from .votenet import VoteNet
 from .voxelnet import VoxelNet
 
 __all__ = [
-    'Base3DDetector', 'VoxelNet', 'DynamicVoxelNet', 'MVXTwoStageDetector',
-    'DynamicMVXFasterRCNN', 'MVXFasterRCNN', 'PartA2', 'VoteNet', 'H3DNet',
-    'CenterPoint', 'SSD3DNet', 'ImVoteNet', 'SingleStageMono3DDetector',
-    'FCOSMono3D', 'ImVoxelNet', 'GroupFree3DNet', 'PointRCNN', 'SMOKEMono3D',
-    'MinkSingleStage3DDetector', 'SASSD'
+    "Base3DDetector",
+    "VoxelNet",
+    "DynamicVoxelNet",
+    "MVXTwoStageDetector",
+    "DynamicMVXFasterRCNN",
+    "MVXFasterRCNN",
+    "PartA2",
+    "VoteNet",
+    "H3DNet",
+    "CenterPoint",
+    "SSD3DNet",
+    "ImVoteNet",
+    "SingleStageMono3DDetector",
+    "FCOSMono3D",
+    "ImVoxelNet",
+    "GroupFree3DNet",
+    "PointRCNN",
+    "SMOKEMono3D",
+    "MinkSingleStage3DDetector",
+    "SASSD",
 ]

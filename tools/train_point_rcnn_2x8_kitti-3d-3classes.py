@@ -130,7 +130,11 @@ def parse_args():
 def main():
     args = parse_args()
 
-    wandb.init(project="resherch",group="point_rcnn_2x8_kitti-3d-3classes", sync_tensorboard=True)
+    wandb.init(
+        project="resherch",
+        group="point_rcnn_2x8_kitti-3d-3classes",
+        sync_tensorboard=True,
+    )
     wandb.config.update(args)
 
     # wandb.watch(model, log="parameters", log_freq=100)

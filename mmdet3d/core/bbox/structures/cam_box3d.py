@@ -35,23 +35,23 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         with_yaw (bool): If True, the value of yaw will be set to 0 as
             axis-aligned boxes tightly enclosing the original boxes.
     """
+
     YAW_AXIS = 1
 
-    def __init__(self,
-                 tensor,
-                 box_dim=7,
-                 with_yaw=True,
-                 origin=(0.5, 1.0, 0.5)):
+    def __init__(
+        self, tensor, box_dim=7, with_yaw=True, origin=(0.5, 1.0, 0.5)
+    ):
         if isinstance(tensor, torch.Tensor):
             device = tensor.device
         else:
-            device = torch.device('cpu')
+            device = torch.device("cpu")
         tensor = torch.as_tensor(tensor, dtype=torch.float32, device=device)
         if tensor.numel() == 0:
             # Use reshape, so we don't end up creating a new tensor that
             # does not depend on the inputs (and consequently confuses jit)
             tensor = tensor.reshape((0, box_dim)).to(
-                dtype=torch.float32, device=device)
+                dtype=torch.float32, device=device
+            )
         assert tensor.dim() == 2 and tensor.size(-1) == box_dim, tensor.size()
 
         if tensor.shape[-1] == 6:
@@ -143,8 +143,8 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
 
         dims = self.dims
         corners_norm = torch.from_numpy(
-            np.stack(np.unravel_index(np.arange(8), [2] * 3), axis=1)).to(
-                device=dims.device, dtype=dims.dtype)
+            np.stack(np.unravel_index(np.arange(8), [2] * 3), axis=1)
+        ).to(device=dims.device, dtype=dims.dtype)
 
         corners_norm = corners_norm[[0, 1, 3, 2, 4, 5, 7, 6]]
         # use relative origin [0.5, 1, 0.5]
@@ -152,7 +152,8 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         corners = dims.view([-1, 1, 3]) * corners_norm.reshape([1, 8, 3])
 
         corners = rotation_3d_in_axis(
-            corners, self.tensor[:, 6], axis=self.YAW_AXIS)
+            corners, self.tensor[:, 6], axis=self.YAW_AXIS
+        )
         corners += self.tensor[:, :3].view(-1, 1, 3)
         return corners
 
@@ -185,15 +186,14 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         if not isinstance(angle, torch.Tensor):
             angle = self.tensor.new_tensor(angle)
 
-        assert angle.shape == torch.Size([3, 3]) or angle.numel() == 1, \
-            f'invalid rotation angle shape {angle.shape}'
+        assert (
+            angle.shape == torch.Size([3, 3]) or angle.numel() == 1
+        ), f"invalid rotation angle shape {angle.shape}"
 
         if angle.numel() == 1:
             self.tensor[:, 0:3], rot_mat_T = rotation_3d_in_axis(
-                self.tensor[:, 0:3],
-                angle,
-                axis=self.YAW_AXIS,
-                return_mat=True)
+                self.tensor[:, 0:3], angle, axis=self.YAW_AXIS, return_mat=True
+            )
         else:
             rot_mat_T = angle
             rot_sin = rot_mat_T[2, 0]
@@ -215,7 +215,7 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
                 raise ValueError
             return points, rot_mat_T
 
-    def flip(self, bev_direction='horizontal', points=None):
+    def flip(self, bev_direction="horizontal", points=None):
         """Flip the boxes in BEV along given BEV direction.
 
         In CAM coordinates, it flips the x (horizontal) or z (vertical) axis.
@@ -228,12 +228,12 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         Returns:
             torch.Tensor, numpy.ndarray or None: Flipped points.
         """
-        assert bev_direction in ('horizontal', 'vertical')
-        if bev_direction == 'horizontal':
+        assert bev_direction in ("horizontal", "vertical")
+        if bev_direction == "horizontal":
             self.tensor[:, 0::7] = -self.tensor[:, 0::7]
             if self.with_yaw:
                 self.tensor[:, 6] = -self.tensor[:, 6] + np.pi
-        elif bev_direction == 'vertical':
+        elif bev_direction == "vertical":
             self.tensor[:, 2::7] = -self.tensor[:, 2::7]
             if self.with_yaw:
                 self.tensor[:, 6] = -self.tensor[:, 6]
@@ -241,16 +241,16 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         if points is not None:
             assert isinstance(points, (torch.Tensor, np.ndarray, BasePoints))
             if isinstance(points, (torch.Tensor, np.ndarray)):
-                if bev_direction == 'horizontal':
+                if bev_direction == "horizontal":
                     points[:, 0] = -points[:, 0]
-                elif bev_direction == 'vertical':
+                elif bev_direction == "vertical":
                     points[:, 2] = -points[:, 2]
             elif isinstance(points, BasePoints):
                 points.flip(bev_direction)
             return points
 
     @classmethod
-    def height_overlaps(cls, boxes1, boxes2, mode='iou'):
+    def height_overlaps(cls, boxes1, boxes2, mode="iou"):
         """Calculate height overlaps of two boxes.
 
         This function calculates the height overlaps between ``boxes1`` and
@@ -274,8 +274,9 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
 
         # positive direction of the gravity axis
         # in cam coord system points to the earth
-        heighest_of_bottom = torch.min(boxes1_bottom_height,
-                                       boxes2_bottom_height)
+        heighest_of_bottom = torch.min(
+            boxes1_bottom_height, boxes2_bottom_height
+        )
         lowest_of_top = torch.max(boxes1_top_height, boxes2_top_height)
         overlaps_h = torch.clamp(heighest_of_bottom - lowest_of_top, min=0)
         return overlaps_h
@@ -297,8 +298,10 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
                 The converted box of the same type in the ``dst`` mode.
         """
         from .box_3d_mode import Box3DMode
+
         return Box3DMode.convert(
-            box=self, src=Box3DMode.CAM, dst=dst, rt_mat=rt_mat)
+            box=self, src=Box3DMode.CAM, dst=dst, rt_mat=rt_mat
+        )
 
     def points_in_boxes_part(self, points, boxes_override=None):
         """Find the box in which each point is.
@@ -316,13 +319,15 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         """
         from .coord_3d_mode import Coord3DMode
 
-        points_lidar = Coord3DMode.convert(points, Coord3DMode.CAM,
-                                           Coord3DMode.LIDAR)
+        points_lidar = Coord3DMode.convert(
+            points, Coord3DMode.CAM, Coord3DMode.LIDAR
+        )
         if boxes_override is not None:
             boxes_lidar = boxes_override
         else:
-            boxes_lidar = Coord3DMode.convert(self.tensor, Coord3DMode.CAM,
-                                              Coord3DMode.LIDAR)
+            boxes_lidar = Coord3DMode.convert(
+                self.tensor, Coord3DMode.CAM, Coord3DMode.LIDAR
+            )
 
         box_idx = super().points_in_boxes_part(points_lidar, boxes_lidar)
         return box_idx
@@ -342,13 +347,15 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         """
         from .coord_3d_mode import Coord3DMode
 
-        points_lidar = Coord3DMode.convert(points, Coord3DMode.CAM,
-                                           Coord3DMode.LIDAR)
+        points_lidar = Coord3DMode.convert(
+            points, Coord3DMode.CAM, Coord3DMode.LIDAR
+        )
         if boxes_override is not None:
             boxes_lidar = boxes_override
         else:
-            boxes_lidar = Coord3DMode.convert(self.tensor, Coord3DMode.CAM,
-                                              Coord3DMode.LIDAR)
+            boxes_lidar = Coord3DMode.convert(
+                self.tensor, Coord3DMode.CAM, Coord3DMode.LIDAR
+            )
 
         box_idx = super().points_in_boxes_all(points_lidar, boxes_lidar)
         return box_idx
