@@ -136,8 +136,8 @@ def parse_args():
 def main():
     args = parse_args()
 
-    wandb.init(project="resherch", sync_tensorboard=True)
-    wandb.config.update(args)
+    # wandb.init(project="resherch", sync_tensorboard=True)
+    # wandb.config.update(args)
 
     # wandb.watch(model, log="parameters", log_freq=100)
 
@@ -255,9 +255,9 @@ def main():
         cfg.model, train_cfg=cfg.get("train_cfg"), test_cfg=cfg.get("test_cfg")
     )
     model.init_weights()
-    if checkpoint is not None:
-        checkpoint = load_checkpoint(
-            model, args.checkpoint, map_location="cpu"
+    
+    checkpoint = load_checkpoint(
+        model, args.checkpoint, map_location="cpu"
         )
 
     logger.info(f"Model:\n{model}")
