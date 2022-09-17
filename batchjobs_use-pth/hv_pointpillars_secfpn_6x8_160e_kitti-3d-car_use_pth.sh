@@ -14,6 +14,6 @@ module load gcc/9.3.0 python/3.8 cuda/11.3/11.3.1 cudnn/8.4/8.4.1
 source /home/ace14496ms/anaconda3/etc/profile.d/conda.sh
 conda activate open-mmlab
 
-python 	/home/ace14496ms/mmdetection3d_for_FDSL/tools/train_hv_pointpillars_secfpn_6x8_160e_kitti-3d-car.py \
+python 	/home/ace14496ms/mmdetection3d_for_FDSL/tools/train_hv_pointpillars_secfpn_6x8_160e_kitti-3d-car_use_pth.py \
 		/home/ace14496ms/mmdetection3d_for_FDSL/configs/pointpillars/hv_pointpillars_secfpn_6x8_160e_kitti-3d-car.py \
 		/home/ace14496ms/mmdetection3d_for_FDSL/checkpoints/hv_pointpillars_secfpn_6x8_160e_kitti-3d-car_20220331_134606-d42d15ed.pth
