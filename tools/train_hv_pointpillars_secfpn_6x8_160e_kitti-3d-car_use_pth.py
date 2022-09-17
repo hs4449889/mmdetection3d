@@ -136,10 +136,12 @@ def parse_args():
 def main():
     args = parse_args()
 
-    wandb.init(project="resherch",group="train_hv_pointpillars_secfpn_6x8_160e_kitti-3d-car_use_pth", sync_tensorboard=True)
+    wandb.init(
+        project="resherch",
+        group="train_hv_pointpillars_secfpn_6x8_160e_kitti-3d-car_use_pth",
+        sync_tensorboard=True,
+    )
     wandb.config.update(args)
-
-    # wandb.watch(model, log="parameters", log_freq=100)
 
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
@@ -255,11 +257,9 @@ def main():
         cfg.model, train_cfg=cfg.get("train_cfg"), test_cfg=cfg.get("test_cfg")
     )
     model.init_weights()
-    
-    checkpoint = load_checkpoint(
-        model, args.checkpoint, map_location="cpu"
-        )
-
+    checkpoint = load_checkpoint(model, args.checkpoint, map_location="cpu")
+    f = open("state_dict_use-pth.txt", "w")
+    f.write(model.state_dict())
     logger.info(f"Model:\n{model}")
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
@@ -289,6 +289,7 @@ def main():
             if hasattr(datasets[0], "PALETTE")
             else None,
         )
+    # wandb.watch(model, log="parameters", log_freq=100)
     # add an attribute for visualization convenience
     model.CLASSES = datasets[0].CLASSES
     train_model(

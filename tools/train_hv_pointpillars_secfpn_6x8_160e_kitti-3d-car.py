@@ -253,6 +253,8 @@ def main():
         cfg.model, train_cfg=cfg.get("train_cfg"), test_cfg=cfg.get("test_cfg")
     )
     model.init_weights()
+    f = open("state_dict_no-pth.txt")
+    f.write(model.state_dict())
 
     logger.info(f"Model:\n{model}")
     datasets = [build_dataset(cfg.data.train)]
